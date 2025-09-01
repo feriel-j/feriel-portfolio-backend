@@ -1,20 +1,12 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendContactEmails = void 0;
+// contactService.ts
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const sendContactEmails = (name, email, message) => __awaiter(void 0, void 0, void 0, function* () {
+const sendContactEmails = async (name, email, message) => {
     const senderEmail = process.env.EMAIL_USER;
     const senderPassword = process.env.EMAIL_PASS;
     if (!senderEmail || !senderPassword) {
@@ -27,8 +19,9 @@ const sendContactEmails = (name, email, message) => __awaiter(void 0, void 0, vo
             pass: senderPassword,
         },
     });
+    // Send email to admin (you)
     try {
-        const adminInfo = yield transporter.sendMail({
+        const adminInfo = await transporter.sendMail({
             from: `"${name}" <${email}>`,
             to: senderEmail,
             subject: "📬 New Contact Form Submission",
@@ -40,8 +33,9 @@ const sendContactEmails = (name, email, message) => __awaiter(void 0, void 0, vo
         console.error("❌ Failed to send email to admin:", error);
         throw new Error("Failed to send admin email.");
     }
+    // Send confirmation to user
     try {
-        const userInfo = yield transporter.sendMail({
+        const userInfo = await transporter.sendMail({
             from: `"Feriel" <${senderEmail}>`,
             to: email,
             subject: "✅ We received your message!",
@@ -51,7 +45,8 @@ const sendContactEmails = (name, email, message) => __awaiter(void 0, void 0, vo
     }
     catch (error) {
         console.error("❌ Failed to send confirmation email to user:", error);
+        // ❌ Don't throw — it's not critical
+        // If you prefer, log it but still succeed overall
     }
-});
+};
 exports.sendContactEmails = sendContactEmails;
-//# sourceMappingURL=contactServices.js.map
