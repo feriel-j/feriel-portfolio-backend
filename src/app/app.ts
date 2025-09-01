@@ -20,11 +20,31 @@ app.use(
     maxAge: 24 * 60 * 60 * 100,
   })
 );
+
+
+const allowedOrigins = [
+  "http://localhost:3000",        // dev
+  "https://feriel.netlify.app"    // production
+];
+
 app.use(cors({
-  origin: "*",
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); // allow Postman, curl
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error("CORS policy: Origin not allowed"), false);
+    }
+    return callback(null, true);
+  },
   methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-  credentials: false
+  credentials: true, // required to allow cookies
 }));
+
+// Handle preflight requests
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 // app.use(
 //   cors({
 //     origin: "http://localhost:3000",
