@@ -20,10 +20,14 @@ app.use((0, cookie_session_1.default)({
     maxAge: 24 * 60 * 60 * 100,
 }));
 
+// --- FINAL CORS CONFIG ---
 app.use(cors({
-  origin: "*",
-  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-  credentials: false
+  origin: [
+    "https://feriel.netlify.app", // production
+    "http://localhost:3000"       // development
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
 
 // const allowedOrigins = [
