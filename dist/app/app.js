@@ -19,11 +19,36 @@ app.use((0, cookie_session_1.default)({
     keys: ["KWK"],
     maxAge: 24 * 60 * 60 * 100,
 }));
-app.use((0, cors_1.default)({
-    origin: "http://localhost:3000",
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
+
+app.use(cors({
+  origin: "*",
+  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+  credentials: false
 }));
+
+// const allowedOrigins = [
+//   "http://localhost:3000",        // dev
+//   "https://feriel.netlify.app"    // production
+// ];
+
+// app.use(cors({
+//   origin: function(origin, callback) {
+//     // autorise les requêtes sans origin (ex : Postman)
+//     if (!origin) return callback(null, true);
+//     if (allowedOrigins.indexOf(origin) === -1) {
+//       const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+//       return callback(new Error(msg), false);
+//     }
+//     return callback(null, true);
+//   },
+//   methods: ["GET","POST","PUT","DELETE"],
+//   credentials: true
+// }));
+// app.use((0, cors_1.default)({
+//     origin: "http://localhost:3000",
+//     methods: "GET,POST,PUT,DELETE",
+//     credentials: true,
+// }));
 // Simple route
 app.get('/', (_req, res) => {
     res.send('🚀 Hello from TypeScript + Express!');
